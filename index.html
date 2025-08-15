@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Pesan Terenkripsi Buat Wardha</title>
-    <link rel="stylesheet" href="styles.css" />
   </head>
 
   <style>
@@ -17,6 +16,8 @@
       --prompt-color: #ffff00;
       --scrollbar-track: #222;
       --scrollbar-thumb: #ffd1dc;
+      --button-bg: linear-gradient(45deg, #ff6b9d, #ffd1dc);
+      --button-shadow: 0 4px 15px rgba(255, 107, 157, 0.3);
     }
 
     * {
@@ -32,7 +33,11 @@
       margin: 0;
       padding: 20px;
       line-height: 1.4;
-      height: 100vh;
+      min-height: 100vh;
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
     }
 
     .hidden {
@@ -69,28 +74,89 @@
       }
     }
 
-    ::-webkit-scrollbar {
-      width: 12px;
+    /* Button untuk mobile */
+    .decrypt-button {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--button-bg);
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 50px;
+      font-family: "Courier New", monospace;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: var(--button-shadow);
+      z-index: 1000;
+      transition: all 0.3s ease;
+      display: none;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
     }
 
-    ::-webkit-scrollbar-track {
-      background: var(--scrollbar-track);
-      border-radius: 6px;
+    .decrypt-button:hover {
+      transform: translateX(-50%) translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 107, 157, 0.4);
     }
 
-    ::-webkit-scrollbar-thumb {
-      background: var(--scrollbar-thumb);
-      border-radius: 6px;
-      border: 2px solid var(--bg-color);
+    .decrypt-button:active {
+      transform: translateX(-50%) translateY(0px);
+      box-shadow: 0 2px 10px rgba(255, 107, 157, 0.3);
     }
 
-    ::-webkit-scrollbar-thumb:hover {
-      background: #a0f0f7;
+    .decrypt-button.show {
+      display: block;
+      animation: buttonFadeIn 0.5s ease-out;
     }
 
-    html {
-      scrollbar-width: thin;
-      scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+    @keyframes buttonFadeIn {
+      0% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0px);
+      }
+    }
+
+    /* Touch indicator untuk mobile */
+    .touch-instruction {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255, 209, 220, 0.9);
+      color: #222;
+      padding: 12px 25px;
+      border-radius: 25px;
+      font-family: "Courier New", monospace;
+      font-size: 14px;
+      font-weight: bold;
+      z-index: 1000;
+      display: none;
+      text-align: center;
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255, 107, 157, 0.3);
+      animation: pulse 2s infinite;
+    }
+
+    .touch-instruction.show {
+      display: block;
+    }
+
+    @keyframes pulse {
+      0%,
+      100% {
+        opacity: 0.8;
+        transform: translateX(-50%) scale(1);
+      }
+      50% {
+        opacity: 1;
+        transform: translateX(-50%) scale(1.05);
+      }
     }
 
     .scroll-indicator {
@@ -108,55 +174,135 @@
       display: none;
     }
 
-    @keyframes pulse {
-      0%,
-      100% {
-        opacity: 0.6;
-      }
-      50% {
-        opacity: 1;
-      }
-    }
-
     .show-scroll-indicator .scroll-indicator {
       display: block;
     }
 
+    /* Responsive design */
+    @media (max-width: 768px) {
+      body {
+        font-size: 12px;
+        padding: 15px;
+        line-height: 1.3;
+      }
+
+      :root {
+        --font-size: 12px;
+        --cursor-width: 6px;
+        --cursor-height: 14px;
+      }
+
+      .decrypt-button {
+        padding: 12px 25px;
+        font-size: 14px;
+        bottom: 20px;
+      }
+
+      .touch-instruction {
+        font-size: 12px;
+        padding: 10px 20px;
+        bottom: 20px;
+        max-width: 280px;
+      }
+
+      .scroll-indicator {
+        bottom: 15px;
+        right: 15px;
+        padding: 6px 10px;
+        font-size: 10px;
+      }
+
+      /* Adjust art for mobile */
+      #menu {
+        font-size: 8px;
+        line-height: 1.1;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        font-size: 10px;
+        padding: 10px;
+      }
+
+      :root {
+        --font-size: 10px;
+        --cursor-width: 5px;
+        --cursor-height: 12px;
+      }
+
+      .decrypt-button {
+        padding: 10px 20px;
+        font-size: 12px;
+        bottom: 15px;
+      }
+
+      .touch-instruction {
+        font-size: 11px;
+        padding: 8px 15px;
+        bottom: 15px;
+        max-width: 250px;
+      }
+
+      #menu {
+        font-size: 6px;
+        line-height: 1;
+      }
+    }
+
+    /* Landscape orientation adjustments */
+    @media (orientation: landscape) and (max-height: 500px) {
+      .decrypt-button,
+      .touch-instruction {
+        bottom: 10px;
+      }
+
+      body {
+        padding: 10px;
+      }
+    }
+
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--scrollbar-track);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--scrollbar-thumb);
+      border-radius: 4px;
+      border: 1px solid var(--bg-color);
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #a0f0f7;
+    }
+
+    html {
+      scrollbar-width: thin;
+      scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+      scroll-behavior: smooth;
+    }
+
     @media (prefers-reduced-motion: reduce) {
       .cursor,
-      .scroll-indicator {
+      .scroll-indicator,
+      .touch-instruction,
+      .decrypt-button {
         animation: none;
         opacity: 1;
       }
     }
 
-    @media (max-width: 768px) {
-      body {
-        font-size: 12px;
-        padding: 10px;
-      }
-
-      .cursor {
-        width: 8px;
-        height: 16px;
-      }
-
-      .scroll-indicator {
-        bottom: 10px;
-        right: 10px;
-        padding: 6px 10px;
-        font-size: 10px;
-      }
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body::after {
-      content: "";
-      display: block;
-      height: 20px;
+    /* Prevent text selection during decryption */
+    .no-select {
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
     }
   </style>
 
@@ -164,6 +310,14 @@
     <div class="scroll-indicator" id="scrollIndicator">
       ⬇️ Scroll lagi sayaaang 💗
     </div>
+
+    <div class="touch-instruction" id="touchInstruction">
+      💕 Sentuh tombol di bawah yaa sayang 💕
+    </div>
+
+    <button class="decrypt-button" id="decryptButton">
+      💖 Buka Pesan Sayang 💖
+    </button>
 
     <pre id="menuNormal" class="hidden" aria-hidden="true">
 
@@ -222,569 +376,612 @@
 
     <pre id="menu" class="hidden" role="main"></pre>
 
-    <script src="script.js"></script>
-  </body>
+    <script>
+      class EncryptedMessage {
+        constructor() {
+          this.charTable = [
+            "!",
+            '"',
+            "#",
+            "$",
+            "%",
+            "&",
+            "'",
+            "(",
+            ")",
+            "*",
+            "+",
+            ",",
+            "-",
+            "~",
+            ".",
+            "/",
+            ":",
+            ";",
+            "<",
+            "=",
+            ">",
+            "?",
+            "[",
+            ",",
+            "]",
+            "_",
+            "{",
+            "}",
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H",
+            "I",
+            "J",
+            "K",
+            "L",
+            "M",
+            "N",
+            "O",
+            "P",
+            "Q",
+            "R",
+            "S",
+            "T",
+            "U",
+            "V",
+            "W",
+            "X",
+            "Y",
+            "Z",
+            "a",
+            "b",
+            "c",
+            "d",
+            "e",
+            "f",
+            "g",
+            "h",
+            "i",
+            "j",
+            "k",
+            "l",
+            "m",
+            "n",
+            "o",
+            "p",
+            "q",
+            "r",
+            "s",
+            "t",
+            "u",
+            "v",
+            "w",
+            "x",
+            "y",
+            "z",
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "Ç",
+            "ü",
+            "é",
+            "â",
+            "ä",
+            "à",
+            "å",
+            "ç",
+            "ê",
+            "ë",
+            "è",
+            "ï",
+            "î",
+            "ì",
+            "Ä",
+            "Å",
+            "É",
+            "æ",
+            "Æ",
+            "ô",
+            "ö",
+            "ò",
+            "û",
+            "ù",
+            "ÿ",
+            "Ö",
+            "Ü",
+            "¢",
+            "£",
+            "¥",
+            "ƒ",
+            "á",
+            "í",
+            "ó",
+            "ú",
+            "ñ",
+            "Ñ",
+            "ª",
+            "º",
+            "¿",
+            "¬",
+            "½",
+            "¼",
+            "¡",
+            "«",
+            "»",
+            "α",
+            "ß",
+            "Γ",
+            "π",
+            "Σ",
+            "σ",
+            "µ",
+            "τ",
+            "Φ",
+            "Θ",
+            "Ω",
+            "δ",
+            "φ",
+            "ε",
+            "±",
+            "÷",
+            "°",
+            "·",
+            "²",
+            "¶",
+            "⌐",
+            "₧",
+            "░",
+            "▒",
+            "│",
+            "┤",
+            "╡",
+            "╢",
+            "╖",
+            "╕",
+            "╣",
+            "║",
+            "╗",
+            "╝",
+            "╜",
+            "╛",
+            "┐",
+            "└",
+            "┴",
+            "┬",
+            "├",
+            "─",
+            "┼",
+            "╞",
+            "╟",
+            "╚",
+            "╔",
+            "╩",
+            "╦",
+            "╠",
+            "═",
+            "╬",
+            "╧",
+            "╨",
+            "╤",
+            "╥",
+            "╙",
+            "╘",
+            "╒",
+            "╓",
+            "╫",
+            "╪",
+            "┘",
+            "┌",
+            "█",
+            "▄",
+            "▌",
+            "▐",
+            "▀",
+          ];
 
-  <script>
-    class EncryptedMessage {
-      constructor() {
-        this.charTable = [
-          "!",
-          '"',
-          "#",
-          "$",
-          "%",
-          "&",
-          "'",
-          "(",
-          ")",
-          "*",
-          "+",
-          ",",
-          "-",
-          "~",
-          ".",
-          "/",
-          ":",
-          ";",
-          "<",
-          "=",
-          ">",
-          "?",
-          "[",
-          "\\",
-          "]",
-          "_",
-          "{",
-          "}",
-          "A",
-          "B",
-          "C",
-          "D",
-          "E",
-          "F",
-          "G",
-          "H",
-          "I",
-          "J",
-          "K",
-          "L",
-          "M",
-          "N",
-          "O",
-          "P",
-          "Q",
-          "R",
-          "S",
-          "T",
-          "U",
-          "V",
-          "W",
-          "X",
-          "Y",
-          "Z",
-          "a",
-          "b",
-          "c",
-          "d",
-          "e",
-          "f",
-          "g",
-          "h",
-          "i",
-          "j",
-          "k",
-          "l",
-          "m",
-          "n",
-          "o",
-          "p",
-          "q",
-          "r",
-          "s",
-          "t",
-          "u",
-          "v",
-          "w",
-          "x",
-          "y",
-          "z",
-          "0",
-          "1",
-          "2",
-          "3",
-          "4",
-          "5",
-          "6",
-          "7",
-          "8",
-          "9",
-          "Ç",
-          "ü",
-          "é",
-          "â",
-          "ä",
-          "à",
-          "å",
-          "ç",
-          "ê",
-          "ë",
-          "è",
-          "ï",
-          "î",
-          "ì",
-          "Ä",
-          "Å",
-          "É",
-          "æ",
-          "Æ",
-          "ô",
-          "ö",
-          "ò",
-          "û",
-          "ù",
-          "ÿ",
-          "Ö",
-          "Ü",
-          "¢",
-          "£",
-          "¥",
-          "ƒ",
-          "á",
-          "í",
-          "ó",
-          "ú",
-          "ñ",
-          "Ñ",
-          "ª",
-          "º",
-          "¿",
-          "¬",
-          "½",
-          "¼",
-          "¡",
-          "«",
-          "»",
-          "α",
-          "ß",
-          "Γ",
-          "π",
-          "Σ",
-          "σ",
-          "µ",
-          "τ",
-          "Φ",
-          "Θ",
-          "Ω",
-          "δ",
-          "φ",
-          "ε",
-          "±",
-          "÷",
-          "°",
-          "·",
-          "²",
-          "¶",
-          "⌐",
-          "₧",
-          "▒",
-          "▓",
-          "│",
-          "┤",
-          "╡",
-          "╢",
-          "╖",
-          "╕",
-          "╣",
-          "║",
-          "╗",
-          "╝",
-          "╜",
-          "╛",
-          "┐",
-          "└",
-          "┴",
-          "┬",
-          "├",
-          "─",
-          "┼",
-          "╞",
-          "╟",
-          "╚",
-          "╔",
-          "╩",
-          "╦",
-          "╠",
-          "═",
-          "╬",
-          "╧",
-          "╨",
-          "╤",
-          "╥",
-          "╙",
-          "╘",
-          "╒",
-          "╓",
-          "╫",
-          "╪",
-          "┘",
-          "┌",
-          "█",
-          "▄",
-          "▌",
-          "▐",
-          "▀",
-        ];
-
-        this.menuElement = null;
-        this.scrollIndicator = null;
-        this.originalText = "";
-        this.messageText = "";
-        this.artText = "";
-        this.encryptedDisplayText = "";
-        this.promptText = "\n\nTekan Enter yaa sayaaang 💗";
-        this.isDecrypting = false;
-        this.intervals = [];
-
-        this.init();
-      }
-
-      init() {
-        if (document.readyState === "loading") {
-          document.addEventListener("DOMContentLoaded", () => this.setup());
-        } else {
-          this.setup();
-        }
-      }
-
-      setup() {
-        this.menuElement = document.getElementById("menu");
-        this.scrollIndicator = document.getElementById("scrollIndicator");
-        const menuNormalElement = document.getElementById("menuNormal");
-
-        if (!this.menuElement || !menuNormalElement) {
-          console.error("Required elements not found");
-          return;
-        }
-
-        this.originalText = menuNormalElement.textContent.trim();
-        this.separateMessageAndArt();
-        this.setupScrollManagement();
-
-        setTimeout(() => this.displayTerminal(), 2000);
-      }
-
-      setupScrollManagement() {
-        this.checkContentOverflow();
-
-        window.addEventListener("scroll", () => {
-          this.handleScroll();
-        });
-
-        window.addEventListener("resize", () => {
-          this.checkContentOverflow();
-        });
-
-        document.addEventListener("keydown", (event) => {
-          this.handleKeyboardScroll(event);
-        });
-      }
-
-      checkContentOverflow() {
-        const windowHeight = window.innerHeight;
-        const documentHeight = document.documentElement.scrollHeight;
-
-        if (documentHeight > windowHeight) {
-          document.body.classList.add("show-scroll-indicator");
-        } else {
-          document.body.classList.remove("show-scroll-indicator");
-        }
-      }
-
-      handleScroll() {
-        const scrollTop =
-          window.pageYOffset || document.documentElement.scrollTop;
-        const windowHeight = window.innerHeight;
-        const documentHeight = document.documentElement.scrollHeight;
-
-        if (scrollTop + windowHeight >= documentHeight - 50) {
-          if (this.scrollIndicator) {
-            this.scrollIndicator.style.opacity = "0";
-          }
-        } else {
-          if (this.scrollIndicator) {
-            this.scrollIndicator.style.opacity = "0.8";
-          }
-        }
-      }
-
-      handleKeyboardScroll(event) {
-        if (
-          this.isDecrypting ||
-          event.target.tagName === "INPUT" ||
-          event.target.tagName === "TEXTAREA"
-        ) {
-          return;
-        }
-
-        const scrollAmount = 100;
-
-        switch (event.key) {
-          case "ArrowDown":
-            event.preventDefault();
-            window.scrollBy(0, scrollAmount);
-            break;
-          case "ArrowUp":
-            event.preventDefault();
-            window.scrollBy(0, -scrollAmount);
-            break;
-          case "PageDown":
-            event.preventDefault();
-            window.scrollBy(0, window.innerHeight * 0.8);
-            break;
-          case "PageUp":
-            event.preventDefault();
-            window.scrollBy(0, -window.innerHeight * 0.8);
-            break;
-          case "Home":
-            event.preventDefault();
-            window.scrollTo(0, 0);
-            break;
-          case "End":
-            event.preventDefault();
-            window.scrollTo(0, document.documentElement.scrollHeight);
-            break;
-        }
-      }
-
-      separateMessageAndArt() {
-        const lines = this.originalText.split("\n");
-        const artStartIndex = lines.findIndex((line) => line.includes("⠀"));
-
-        if (artStartIndex !== -1) {
-          this.messageText = lines.slice(0, artStartIndex).join("\n").trim();
-          this.artText = lines.slice(artStartIndex).join("\n");
-        } else {
-          this.messageText = this.originalText;
+          this.menuElement = null;
+          this.scrollIndicator = null;
+          this.touchInstruction = null;
+          this.decryptButton = null;
+          this.originalText = "";
+          this.messageText = "";
           this.artText = "";
+          this.encryptedDisplayText = "";
+          this.isDecrypting = false;
+          this.intervals = [];
+          this.isMobile = this.detectMobile();
+
+          this.init();
         }
-      }
 
-      getRandomChar() {
-        return this.charTable[
-          Math.floor(Math.random() * this.charTable.length)
-        ];
-      }
+        detectMobile() {
+          return (
+            /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+              navigator.userAgent
+            ) || window.innerWidth <= 768
+          );
+        }
 
-      encryptText(text) {
-        return text
-          .split("")
-          .map((char) => {
-            if (char === " " || char === "\n") {
-              return char;
-            } else if (char === "⠀" || char.match(/^[\u2800-\u28FF]$/)) {
-              return this.getRandomChar();
-            } else {
-              return this.getRandomChar();
+        init() {
+          if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", () => this.setup());
+          } else {
+            this.setup();
+          }
+        }
+
+        setup() {
+          this.menuElement = document.getElementById("menu");
+          this.scrollIndicator = document.getElementById("scrollIndicator");
+          this.touchInstruction = document.getElementById("touchInstruction");
+          this.decryptButton = document.getElementById("decryptButton");
+          const menuNormalElement = document.getElementById("menuNormal");
+
+          if (!this.menuElement || !menuNormalElement) {
+            console.error("Required elements not found");
+            return;
+          }
+
+          this.originalText = menuNormalElement.textContent.trim();
+          this.separateMessageAndArt();
+          this.setupScrollManagement();
+          this.setupTouchInteraction();
+
+          setTimeout(() => this.displayTerminal(), 2000);
+        }
+
+        setupScrollManagement() {
+          this.checkContentOverflow();
+
+          window.addEventListener("scroll", () => {
+            this.handleScroll();
+          });
+
+          window.addEventListener("resize", () => {
+            this.checkContentOverflow();
+            this.isMobile = this.detectMobile();
+          });
+
+          if (!this.isMobile) {
+            document.addEventListener("keydown", (event) => {
+              this.handleKeyboardScroll(event);
+            });
+          }
+        }
+
+        setupTouchInteraction() {
+          if (this.decryptButton) {
+            this.decryptButton.addEventListener("click", () => {
+              this.handleDecryptTrigger();
+            });
+          }
+
+          // Touch events untuk mobile
+          if (this.isMobile) {
+            document.addEventListener("touchstart", (e) => {
+              if (
+                this.touchInstruction &&
+                this.touchInstruction.classList.contains("show")
+              ) {
+                if (!this.decryptButton.contains(e.target)) {
+                  this.handleDecryptTrigger();
+                }
+              }
+            });
+          }
+
+          // Keyboard events untuk desktop
+          document.addEventListener("keydown", (event) => {
+            if (
+              event.key === "Enter" &&
+              !this.isDecrypting &&
+              (this.touchInstruction.classList.contains("show") ||
+                this.decryptButton.classList.contains("show"))
+            ) {
+              this.handleDecryptTrigger();
             }
-          })
-          .join("");
-      }
-
-      showMenu() {
-        if (this.menuElement) {
-          this.menuElement.classList.remove("hidden");
-          this.menuElement.classList.add("visible");
-          setTimeout(() => this.checkContentOverflow(), 100);
-        }
-      }
-
-      hideMenu() {
-        if (this.menuElement) {
-          this.menuElement.classList.add("hidden");
-          this.menuElement.classList.remove("visible");
-        }
-      }
-
-      displayCharacter(menuText, currentIndex = 0, decryptedText = "") {
-        if (currentIndex >= menuText.length) {
-          this.showDecryptPrompt(decryptedText);
-          return;
-        }
-
-        this.menuElement.innerHTML =
-          decryptedText + '<span class="cursor"></span>';
-        decryptedText += menuText[currentIndex];
-        currentIndex++;
-
-        if (currentIndex % 50 === 0) {
-          this.autoScrollIfNeeded();
-        }
-
-        setTimeout(() => {
-          this.displayCharacter(menuText, currentIndex, decryptedText);
-        }, 10);
-      }
-
-      autoScrollIfNeeded() {
-        const windowHeight = window.innerHeight;
-        const documentHeight = document.documentElement.scrollHeight;
-        const scrollTop =
-          window.pageYOffset || document.documentElement.scrollTop;
-
-        if (scrollTop + windowHeight >= documentHeight - 200) {
-          window.scrollTo({
-            top: documentHeight,
-            behavior: "smooth",
           });
         }
-      }
 
-      showDecryptPrompt(encryptedText) {
-        this.encryptedDisplayText = encryptedText;
-        const promptIndex = 0;
-        this.typePrompt(encryptedText, this.promptText, promptIndex);
-      }
+        handleDecryptTrigger() {
+          if (this.isDecrypting) return;
 
-      typePrompt(baseText, promptText, currentIndex) {
-        if (currentIndex >= promptText.length) {
-          this.menuElement.innerHTML =
-            baseText + promptText + '<span class="cursor"></span>';
-          this.setupDecryptionListener();
-          return;
+          this.isDecrypting = true;
+          this.hidePromptElements();
+          this.menuElement.textContent = this.encryptedDisplayText;
+          this.randomizeText();
         }
 
-        const currentPrompt = promptText.substring(0, currentIndex + 1);
-        this.menuElement.innerHTML =
-          baseText + currentPrompt + '<span class="cursor"></span>';
-
-        setTimeout(() => {
-          this.typePrompt(baseText, promptText, currentIndex + 1);
-        }, 50);
-      }
-
-      setupDecryptionListener() {
-        const handleKeyDown = (event) => {
-          if (event.key === "Enter" && !this.isDecrypting) {
-            this.isDecrypting = true;
-            this.menuElement.textContent = this.encryptedDisplayText;
-            this.randomizeText();
-            document.removeEventListener("keydown", handleKeyDown);
+        hidePromptElements() {
+          if (this.touchInstruction) {
+            this.touchInstruction.classList.remove("show");
           }
-        };
-
-        document.addEventListener("keydown", handleKeyDown);
-      }
-
-      randomizeText() {
-        let randomizeCount = 0;
-        const maxRandomizations = 100;
-
-        const randomizeInterval = setInterval(() => {
-          if (randomizeCount >= maxRandomizations) {
-            clearInterval(randomizeInterval);
-            this.startDecryption();
-            return;
+          if (this.decryptButton) {
+            this.decryptButton.classList.remove("show");
           }
+        }
 
-          this.menuElement.textContent = this.encryptText(this.originalText);
-          randomizeCount++;
-        }, 10);
+        checkContentOverflow() {
+          const windowHeight = window.innerHeight;
+          const documentHeight = document.documentElement.scrollHeight;
 
-        this.intervals.push(randomizeInterval);
-
-        setTimeout(() => {
-          clearInterval(randomizeInterval);
-          this.startDecryption();
-        }, 1000);
-      }
-
-      startDecryption() {
-        let isArtRevealed = false;
-
-        const decryptChar = () => {
-          const currentText = this.menuElement.textContent;
-
-          if (currentText === this.originalText) {
-            this.scrollToShowCompleteContent();
-            return;
+          if (documentHeight > windowHeight) {
+            document.body.classList.add("show-scroll-indicator");
+          } else {
+            document.body.classList.remove("show-scroll-indicator");
           }
+        }
 
-          const mismatchedIndices = [];
+        handleScroll() {
+          const scrollTop =
+            window.pageYOffset || document.documentElement.scrollTop;
+          const windowHeight = window.innerHeight;
+          const documentHeight = document.documentElement.scrollHeight;
 
-          if (!isArtRevealed) {
-            for (let i = 0; i < this.messageText.length; i++) {
-              if (currentText[i] !== this.originalText[i]) {
-                mismatchedIndices.push(i);
-              }
-            }
-
-            if (mismatchedIndices.length === 0) {
-              isArtRevealed = true;
+          if (scrollTop + windowHeight >= documentHeight - 50) {
+            if (this.scrollIndicator) {
+              this.scrollIndicator.style.opacity = "0";
             }
           } else {
-            for (
-              let i = this.messageText.length;
-              i < this.originalText.length;
-              i++
-            ) {
-              if (currentText[i] !== this.originalText[i]) {
-                mismatchedIndices.push(i);
-              }
+            if (this.scrollIndicator) {
+              this.scrollIndicator.style.opacity = "0.8";
             }
           }
+        }
 
-          if (mismatchedIndices.length > 0) {
-            const randomIndex =
-              mismatchedIndices[
-                Math.floor(Math.random() * mismatchedIndices.length)
-              ];
-            const newText =
-              currentText.substring(0, randomIndex) +
-              this.originalText[randomIndex] +
-              currentText.substring(randomIndex + 1);
-            this.menuElement.textContent = newText;
+        handleKeyboardScroll(event) {
+          if (
+            this.isDecrypting ||
+            event.target.tagName === "INPUT" ||
+            event.target.tagName === "TEXTAREA"
+          ) {
+            return;
           }
 
-          if (currentText !== this.originalText) {
-            setTimeout(decryptChar, isArtRevealed ? 8 : 2);
+          const scrollAmount = 100;
+
+          switch (event.key) {
+            case "ArrowDown":
+              event.preventDefault();
+              window.scrollBy(0, scrollAmount);
+              break;
+            case "ArrowUp":
+              event.preventDefault();
+              window.scrollBy(0, -scrollAmount);
+              break;
+            case "PageDown":
+              event.preventDefault();
+              window.scrollBy(0, window.innerHeight * 0.8);
+              break;
+            case "PageUp":
+              event.preventDefault();
+              window.scrollBy(0, -window.innerHeight * 0.8);
+              break;
+            case "Home":
+              event.preventDefault();
+              window.scrollTo(0, 0);
+              break;
+            case "End":
+              event.preventDefault();
+              window.scrollTo(0, document.documentElement.scrollHeight);
+              break;
           }
-        };
+        }
 
-        decryptChar();
+        separateMessageAndArt() {
+          const lines = this.originalText.split("\n");
+          const artStartIndex = lines.findIndex((line) => line.includes("⠀"));
+
+          if (artStartIndex !== -1) {
+            this.messageText = lines.slice(0, artStartIndex).join("\n").trim();
+            this.artText = lines.slice(artStartIndex).join("\n");
+          } else {
+            this.messageText = this.originalText;
+            this.artText = "";
+          }
+        }
+
+        getRandomChar() {
+          return this.charTable[
+            Math.floor(Math.random() * this.charTable.length)
+          ];
+        }
+
+        encryptText(text) {
+          return text
+            .split("")
+            .map((char) => {
+              if (char === " " || char === "\n") {
+                return char;
+              } else if (char === "⠀" || char.match(/^[\u2800-\u28FF]$/)) {
+                return this.getRandomChar();
+              } else {
+                return this.getRandomChar();
+              }
+            })
+            .join("");
+        }
+
+        showMenu() {
+          if (this.menuElement) {
+            this.menuElement.classList.remove("hidden");
+            this.menuElement.classList.add("visible");
+            setTimeout(() => this.checkContentOverflow(), 100);
+          }
+        }
+
+        displayCharacter(menuText, currentIndex = 0, decryptedText = "") {
+          if (currentIndex >= menuText.length) {
+            this.showDecryptPrompt(decryptedText);
+            return;
+          }
+
+          this.menuElement.innerHTML =
+            decryptedText + '<span class="cursor"></span>';
+          decryptedText += menuText[currentIndex];
+          currentIndex++;
+
+          if (currentIndex % 50 === 0) {
+            this.autoScrollIfNeeded();
+          }
+
+          setTimeout(() => {
+            this.displayCharacter(menuText, currentIndex, decryptedText);
+          }, 10);
+        }
+
+        autoScrollIfNeeded() {
+          const windowHeight = window.innerHeight;
+          const documentHeight = document.documentElement.scrollHeight;
+          const scrollTop =
+            window.pageYOffset || document.documentElement.scrollTop;
+
+          if (scrollTop + windowHeight >= documentHeight - 200) {
+            window.scrollTo({
+              top: documentHeight,
+              behavior: "smooth",
+            });
+          }
+        }
+
+        showDecryptPrompt(encryptedText) {
+          this.encryptedDisplayText = encryptedText;
+
+          // Remove cursor
+          this.menuElement.innerHTML = encryptedText;
+
+          // Show appropriate prompt based on device
+          setTimeout(() => {
+            if (this.isMobile) {
+              if (this.touchInstruction) {
+                this.touchInstruction.classList.add("show");
+              }
+            }
+
+            if (this.decryptButton) {
+              this.decryptButton.classList.add("show");
+            }
+          }, 500);
+        }
+
+        randomizeText() {
+          let randomizeCount = 0;
+          const maxRandomizations = 100;
+
+          const randomizeInterval = setInterval(() => {
+            if (randomizeCount >= maxRandomizations) {
+              clearInterval(randomizeInterval);
+              this.startDecryption();
+              return;
+            }
+
+            this.menuElement.textContent = this.encryptText(this.originalText);
+            randomizeCount++;
+          }, 10);
+
+          this.intervals.push(randomizeInterval);
+
+          setTimeout(() => {
+            clearInterval(randomizeInterval);
+            this.startDecryption();
+          }, 1000);
+        }
+
+        startDecryption() {
+          let isArtRevealed = false;
+          this.menuElement.classList.add("no-select");
+
+          const decryptChar = () => {
+            const currentText = this.menuElement.textContent;
+
+            if (currentText === this.originalText) {
+              this.menuElement.classList.remove("no-select");
+              this.scrollToShowCompleteContent();
+              return;
+            }
+
+            const mismatchedIndices = [];
+
+            if (!isArtRevealed) {
+              for (let i = 0; i < this.messageText.length; i++) {
+                if (currentText[i] !== this.originalText[i]) {
+                  mismatchedIndices.push(i);
+                }
+              }
+
+              if (mismatchedIndices.length === 0) {
+                isArtRevealed = true;
+              }
+            } else {
+              for (
+                let i = this.messageText.length;
+                i < this.originalText.length;
+                i++
+              ) {
+                if (currentText[i] !== this.originalText[i]) {
+                  mismatchedIndices.push(i);
+                }
+              }
+            }
+
+            if (mismatchedIndices.length > 0) {
+              const randomIndex =
+                mismatchedIndices[
+                  Math.floor(Math.random() * mismatchedIndices.length)
+                ];
+              const newText =
+                currentText.substring(0, randomIndex) +
+                this.originalText[randomIndex] +
+                currentText.substring(randomIndex + 1);
+              this.menuElement.textContent = newText;
+            }
+
+            if (currentText !== this.originalText) {
+              setTimeout(decryptChar, isArtRevealed ? 8 : 2);
+            }
+          };
+
+          decryptChar();
+        }
+
+        scrollToShowCompleteContent() {
+          setTimeout(() => {
+            window.scrollTo({
+              top: document.documentElement.scrollHeight,
+              behavior: "smooth",
+            });
+          }, 500);
+        }
+
+        displayTerminal() {
+          const encryptedText = this.encryptText(this.originalText);
+          this.showMenu();
+          this.displayCharacter(encryptedText);
+        }
+
+        destroy() {
+          this.intervals.forEach((interval) => clearInterval(interval));
+          this.intervals = [];
+          window.removeEventListener("scroll", this.handleScroll);
+          window.removeEventListener("resize", this.checkContentOverflow);
+        }
       }
 
-      scrollToShowCompleteContent() {
-        setTimeout(() => {
-          window.scrollTo({
-            top: document.documentElement.scrollHeight,
-            behavior: "smooth",
-          });
-        }, 500);
-      }
+      const encryptedMessage = new EncryptedMessage();
 
-      displayTerminal() {
-        const encryptedText = this.encryptText(this.originalText);
-        this.showMenu();
-        this.displayCharacter(encryptedText);
-      }
-
-      destroy() {
-        this.intervals.forEach((interval) => clearInterval(interval));
-        this.intervals = [];
-        window.removeEventListener("scroll", this.handleScroll);
-        window.removeEventListener("resize", this.checkContentOverflow);
-      }
-    }
-
-    const encryptedMessage = new EncryptedMessage();
-
-    window.addEventListener("beforeunload", () => {
-      if (encryptedMessage) {
-        encryptedMessage.destroy();
-      }
-    });
-  </script>
+      window.addEventListener("beforeunload", () => {
+        if (encryptedMessage) {
+          encryptedMessage.destroy();
+        }
+      });
+    </script>
+  </body>
 </html>
-
-
